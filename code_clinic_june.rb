@@ -2,10 +2,12 @@ require 'date'
 require 'readline'
 require 'open-uri'
 
+#Test arrays
 wind_speed = [1,2,3,4,5,9,6,7,8]
 air_temp = [40, 50, 60, 50, 40, 70, 80, 90, 60]
 barometric = [55, 60, 80, 1000, 14, 12, 50, 80]
 
+#Mean method takes array as arguement
 def mean(arr)
 	length = arr.length
 	value = 0
@@ -17,6 +19,7 @@ def mean(arr)
 	puts mean
 end
 
+#Median method takes array as arguement
 def median(arr)
 	sorted = arr.sort {|a,b| a <=> b}
 	length = sorted.length
@@ -34,7 +37,7 @@ def median(arr)
 	end
 end
 
-
+#Prompt User for dates and add to array
 def user_input(dates)
 	puts "Please enter a start date as YYYY-MM-DD"
 	start_date = Date.parse("2014-07-14") #Date.parse(gets.chomp)
@@ -46,29 +49,30 @@ def user_input(dates)
 	dates << end_date
 end
 
-
+# Turn dates from string into properly formatted date for the API, this includes paring out the year.
 def parse_dates(dates, parsed_dates)
-		dates.each do |date|
-		  parsed_dates << date.strftime('%Y_%m_%d')
-		  parsed_dates << date.strftime('%Y')
-	  	end
+	dates.each do |date|
+		parsed_dates << date.strftime('%Y_%m_%d')
+		parsed_dates << date.strftime('%Y')
+	end
 end
 
+#construct Start and End date URI, call to API and parse response to array based on spaces
 def api_call (types, start_uri, end_uri)
-urls = []
-  types.each do |type|
-	urls << start_uri + type
-	urls << end_uri + type
-  end
-  urls.each do |x|
-  	puts x
-  	data = open(x).readlines
-	  readings = data.map do |line|
-	    line_items = line.chomp.split(" ")
-	     reading = line_items[2].to_f
-      end
-      print readings
-   end
+	urls = []
+	types.each do |type|
+		urls << start_uri + type
+		urls << end_uri + type
+	end
+	urls.each do |x|
+		puts x
+		data = open(x).readlines
+		readings = data.map do |line|
+			line_items = line.chomp.split(" ")
+			reading = line_items[2].to_f
+		end
+		print readings
+	end
 end
 
 dates = []
