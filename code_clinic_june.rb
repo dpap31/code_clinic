@@ -1,3 +1,4 @@
+
 require 'date'
 require 'readline'
 require 'open-uri'
@@ -8,34 +9,38 @@ air_temp = [40, 50, 60, 50, 40, 70, 80, 90, 60]
 barometric = [55, 60, 80, 1000, 14, 12, 50, 80]
 
 #Mean method takes array as arguement
-def mean(arr)
+mean_med = []
+def mean(arr, mean_med)
 	length = arr.length
 	value = 0
 	sum = 0
 	arr.each do |x|
 		sum = sum + x
 		mean = sum/length
+		puts mean
 	end
-	puts mean
 end
 
 #Median method takes array as arguement
-def median(arr)
+def median(arr, mean_med)
 	sorted = arr.sort {|a,b| a <=> b}
 	length = sorted.length
 
 	if length % 2 == 1 #odd
 		half_length = length/2
 		median_position = half_length + 0.5
-		puts arr[median_position]
+		mean_med << [median_position]
 	else
 		half_length == length/2 #even
-		low_position = half_length - 1
-		high_postion = half_length + 1
-		median = (arr[high_postion] + arr[low_position])/2
-		puts median
+		low_position = half_length.to_i - 1
+		high_postion = half_length.to_i + 1
+		median = (high_postion + low_position)/2
+		mean_med << median
 	end
 end
+puts barometric.count
+median(barometric, mean_med)
+puts mean_med
 
 #Prompt User for dates and add to array
 def user_input(dates)
@@ -58,7 +63,7 @@ def parse_dates(dates, parsed_dates)
 end
 
 #construct Start and End date URI, call to API and parse response to array based on spaces
-def api_call (types, start_uri, end_uri)
+def api_call (types, start_uri, end_uri, types_arr)
 	urls = []
 	types.each do |type|
 		urls << start_uri + type
@@ -71,9 +76,11 @@ def api_call (types, start_uri, end_uri)
 			line_items = line.chomp.split(" ")
 			reading = line_items[2].to_f
 		end
-		print readings
+		  types_arr << readings
 	end
 end
+
+
 
 dates = []
 user_input(dates)
@@ -88,10 +95,12 @@ end_date = parsed_dates[2].to_s
 start_uri = "#{base_url}#{start_year}/#{start_date}/"
 end_uri = "#{base_url}#{end_year}/#{end_date}/"
 types = ['Wind_Speed', 'Air_Temp', 'Barometric_Press']
+types_arr = []
 
-api_call(types, start_uri, end_uri)
+api_call(types, start_uri, end_uri, types_arr)
 
-
-
+types_arr.each do |x|
+	median(x)
+end
 
 
