@@ -81,7 +81,7 @@ def api_call (types, start_uri, end_uri, types_arr)
 end
 
 
-
+#parse dates
 dates = []
 user_input(dates)
 
